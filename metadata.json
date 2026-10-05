@@ -1,0 +1,6 @@
+{
+  "name": "DBMS Examination Scheduling and Result Processing System",
+  "description": "Design and Implementation of a Database Management System for Examination Scheduling and Result Processing System with MySQL 8.x, Express.js, and Live Database Proof.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

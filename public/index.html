@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DBMS Examination Scheduling and Result Processing System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🎓</div>
+        <div class="brand-text">
+          <h2>ExamDBMS</h2>
+          <span>College Portal</span>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li><a href="#dashboard" data-view="dashboard" class="active"><span class="nav-icon">📊</span> Dashboard</a></li>
+        <li><a href="#departments" data-view="departments"><span class="nav-icon">🏢</span> Departments</a></li>
+        <li><a href="#students" data-view="students"><span class="nav-icon">👨‍🎓</span> Students</a></li>
+        <li><a href="#courses" data-view="courses"><span class="nav-icon">📚</span> Courses</a></li>
+        <li><a href="#faculty" data-view="faculty"><span class="nav-icon">👨‍🏫</span> Faculty</a></li>
+        <li><a href="#halls" data-view="halls"><span class="nav-icon">🏛️</span> Exam Halls</a></li>
+        <li><a href="#schedules" data-view="schedules"><span class="nav-icon">🗓️</span> Exam Schedule</a></li>
+        <li><a href="#results" data-view="results"><span class="nav-icon">📝</span> Results & Grades</a></li>
+        <li><a href="#reports" data-view="reports"><span class="nav-icon">📈</span> Reports & SQL</a></li>
+        <li><a href="#explorer" data-view="explorer"><span class="nav-icon">🔍</span> Database Explorer</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div><strong>Project Title:</strong></div>
+        <div style="font-size: 10px; margin-top: 2px; color: #cbd5e1;">Exam Scheduling & Result Processing System</div>
+        <div style="margin-top: 8px;"><strong>Student:</strong> Sathwik S</div>
+        <div><strong>Roll No:</strong> 25WU0102249</div>
+        <div><strong>Sec:</strong> AIML Whales</div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <h1>Examination Scheduling and Result Processing System</h1>
+          <p>Database Management Systems (DBMS) Course Project • MySQL 8.x • Express.js</p>
+        </div>
+        <div class="header-right">
+          <div class="student-tag">
+            <span>👤</span>
+            <span><strong>Sathwik S</strong> (25WU0102249) • AIML Whales</span>
+          </div>
+          <div id="db-status-pill" class="db-pill sim">
+            <span class="dot amber"></span> MySQL Engine Active
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Pages -->
+      <main class="page-content">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-section">
+          <div class="section-header">
+            <div>
+              <h2>Academic Overview & System Statistics</h2>
+              <p>Live metrics compiled from normalized MySQL tables</p>
+            </div>
+          </div>
+
+          <!-- Record Counts Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon blue">🏢</div>
+              <div class="stat-info"><h3 id="count-dept">0</h3><span>Departments</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon indigo">👨‍🎓</div>
+              <div class="stat-info"><h3 id="count-students">0</h3><span>Enrolled Students</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon purple">📚</div>
+              <div class="stat-info"><h3 id="count-courses">0</h3><span>Active Courses</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon emerald">👨‍🏫</div>
+              <div class="stat-info"><h3 id="count-faculty">0</h3><span>Faculty Members</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon amber">🏛️</div>
+              <div class="stat-info"><h3 id="count-halls">0</h3><span>Exam Halls</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon rose">🗓️</div>
+              <div class="stat-info"><h3 id="count-schedules">0</h3><span>Exams Scheduled</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon teal">📝</div>
+              <div class="stat-info"><h3 id="count-results">0</h3><span>Graded Results</span></div>
+            </div>
+          </div>
+
+          <!-- Aggregates Metrics -->
+          <div class="metrics-banner">
+            <div class="metric-box">
+              <h4>Total Exams Scheduled</h4>
+              <div class="metric-value" id="metric-total-exams">0</div>
+              <p>Across all departments and exam halls</p>
+            </div>
+            <div class="metric-box">
+              <h4>Overall Pass Percentage</h4>
+              <div class="metric-value" style="color: #059669;" id="metric-pass-pct">0%</div>
+              <p>Calculated using SQL aggregates SUM() / COUNT()</p>
+            </div>
+            <div class="metric-box">
+              <h4>Average Marks Obtained</h4>
+              <div class="metric-value" id="metric-avg-marks">0</div>
+              <p>Calculated across all evaluated courses</p>
+            </div>
+            <div class="metric-box">
+              <h4>Evaluated Candidates</h4>
+              <div class="metric-value" id="metric-evaluated">0</div>
+              <p>Total processed result entries</p>
+            </div>
+          </div>
+
+          <!-- Upcoming Exams Table -->
+          <div class="card">
+            <div class="card-title">
+              <span>Upcoming Scheduled Examinations</span>
+              <button class="btn btn-secondary" onclick="showView('schedules')">View Master Schedule →</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Course Code & Title</th>
+                    <th>Exam Type</th>
+                    <th>Date</th>
+                    <th>Time Slot</th>
+                    <th>Exam Hall</th>
+                    <th>Invigilator</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-upcoming-tbody">
+                  <tr><td colspan="6" style="text-align: center; padding: 16px;">Loading upcoming exams...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. DEPARTMENTS VIEW -->
+        <section id="view-departments" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Department Management</h2>
+              <p>Academic branches offering degree programs (1:N relationship with Student, Course, Faculty)</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('departments', 'view')">📋 View Departments</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('departments', 'add')">➕ Add Department</button>
+          </div>
+
+          <div id="departments-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Register New Department</div>
+              <form onsubmit="handleFormSubmit(event, 'departments', '/api/departments')">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Department Name <span class="req">*</span></label>
+                    <input type="text" name="department_name" class="form-input" placeholder="e.g. Artificial Intelligence & Data Science" required>
+                    <span class="form-help">Must be unique across the college.</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Head of Department (HOD) <span class="req">*</span></label>
+                    <input type="text" name="hod_name" class="form-input" placeholder="e.g. Dr. Rajesh Kumar" required>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset Form</button>
+                    <button type="submit" class="btn btn-primary">Save Department to MySQL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search departments..." oninput="handleTableSearch('departments', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('departments', 'department_id')">ID ↕</th>
+                      <th onclick="handleTableSort('departments', 'department_name')">Department Name ↕</th>
+                      <th onclick="handleTableSort('departments', 'hod_name')">HOD Name ↕</th>
+                      <th>Total Students</th>
+                      <th>Total Courses</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="departments-tbody"></tbody>
+                </table>
+              </div>
+              <div id="departments-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. STUDENTS VIEW -->
+        <section id="view-students" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Student Records Management</h2>
+              <p>Manage candidate enrollment across academic departments and semesters (1 to 8)</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('students', 'view')">📋 View Students</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('students', 'add')">➕ Register Student</button>
+          </div>
+
+          <div id="students-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Register New Student</div>
+              <form onsubmit="handleFormSubmit(event, 'students', '/api/students')">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Roll Number <span class="req">*</span></label>
+                    <input type="text" name="roll_no" class="form-input" placeholder="e.g. 25WU0102249" required>
+                    <span class="form-help">Unique academic registration identifier.</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Full Name <span class="req">*</span></label>
+                    <input type="text" name="full_name" class="form-input" placeholder="e.g. Sathwik S" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Email Address <span class="req">*</span></label>
+                    <input type="email" name="email" class="form-input" placeholder="e.g. sathwik@college.edu" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" class="form-input" placeholder="e.g. 9876543210">
+                  </div>
+                  <div class="form-group">
+                    <label>Semester (1 - 8) <span class="req">*</span></label>
+                    <input type="number" name="semester" min="1" max="8" value="3" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Department (Foreign Key) <span class="req">*</span></label>
+                    <select name="department_id" id="student-dept-select" class="form-select" required>
+                      <option value="">Loading departments...</option>
+                    </select>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Student to MySQL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search by name, roll no, email..." oninput="handleTableSearch('students', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('students', 'roll_no')">Roll No ↕</th>
+                      <th onclick="handleTableSort('students', 'full_name')">Student Name ↕</th>
+                      <th onclick="handleTableSort('students', 'email')">Email ↕</th>
+                      <th onclick="handleTableSort('students', 'semester')">Semester ↕</th>
+                      <th onclick="handleTableSort('students', 'department_name')">Department ↕</th>
+                      <th>Phone</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="students-tbody"></tbody>
+                </table>
+              </div>
+              <div id="students-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. COURSES VIEW -->
+        <section id="view-courses" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Course Catalog</h2>
+              <p>Define courses, credit weighting, maximum marks, and minimum passing threshold</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('courses', 'view')">📋 View Courses</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('courses', 'add')">➕ Add Course</button>
+          </div>
+
+          <div id="courses-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Add Academic Course</div>
+              <form onsubmit="handleFormSubmit(event, 'courses', '/api/courses')">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Course Code <span class="req">*</span></label>
+                    <input type="text" name="course_code" class="form-input" placeholder="e.g. AIML301" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Course Title <span class="req">*</span></label>
+                    <input type="text" name="course_name" class="form-input" placeholder="e.g. Database Management Systems" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Credits (CHECK > 0) <span class="req">*</span></label>
+                    <input type="number" name="credits" min="1" max="10" value="4" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Semester (1 - 8) <span class="req">*</span></label>
+                    <input type="number" name="semester" min="1" max="8" value="3" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Max Marks</label>
+                    <input type="number" name="max_marks" step="0.5" value="100.0" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Pass Marks</label>
+                    <input type="number" name="pass_marks" step="0.5" value="40.0" class="form-input" required>
+                  </div>
+                  <div class="form-group full-width">
+                    <label>Department (Foreign Key) <span class="req">*</span></label>
+                    <select name="department_id" id="course-dept-select" class="form-select" required>
+                      <option value="">Loading departments...</option>
+                    </select>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Course to MySQL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search courses..." oninput="handleTableSearch('courses', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('courses', 'course_code')">Code ↕</th>
+                      <th onclick="handleTableSort('courses', 'course_name')">Course Title ↕</th>
+                      <th onclick="handleTableSort('courses', 'credits')">Credits ↕</th>
+                      <th onclick="handleTableSort('courses', 'semester')">Semester ↕</th>
+                      <th>Pass / Max Marks</th>
+                      <th onclick="handleTableSort('courses', 'department_name')">Department ↕</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="courses-tbody"></tbody>
+                </table>
+              </div>
+              <div id="courses-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. FACULTY VIEW -->
+        <section id="view-faculty" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Faculty Management</h2>
+              <p>Instructors assigned to departments and designated as exam invigilators</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('faculty', 'view')">📋 View Faculty</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('faculty', 'add')">➕ Add Faculty</button>
+          </div>
+
+          <div id="faculty-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Register Faculty Member</div>
+              <form onsubmit="handleFormSubmit(event, 'faculty', '/api/faculty')">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Faculty Name <span class="req">*</span></label>
+                    <input type="text" name="faculty_name" class="form-input" placeholder="e.g. Dr. Ramesh Sharma" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Email Address <span class="req">*</span></label>
+                    <input type="email" name="email" class="form-input" placeholder="e.g. ramesh.sharma@college.edu" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Designation <span class="req">*</span></label>
+                    <input type="text" name="designation" class="form-input" placeholder="e.g. Professor & HOD" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Department (Foreign Key) <span class="req">*</span></label>
+                    <select name="department_id" id="faculty-dept-select" class="form-select" required>
+                      <option value="">Loading departments...</option>
+                    </select>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Faculty to MySQL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search faculty..." oninput="handleTableSearch('faculty', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('faculty', 'faculty_id')">ID ↕</th>
+                      <th onclick="handleTableSort('faculty', 'faculty_name')">Faculty Name ↕</th>
+                      <th onclick="handleTableSort('faculty', 'email')">Email ↕</th>
+                      <th onclick="handleTableSort('faculty', 'designation')">Designation ↕</th>
+                      <th onclick="handleTableSort('faculty', 'department_name')">Department ↕</th>
+                      <th>Invigilation Duties</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="faculty-tbody"></tbody>
+                </table>
+              </div>
+              <div id="faculty-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. EXAM HALLS VIEW -->
+        <section id="view-halls" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Examination Halls</h2>
+              <p>Physical halls and testing laboratories with capacity constraints</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('halls', 'view')">📋 View Exam Halls</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('halls', 'add')">➕ Add Exam Hall</button>
+          </div>
+
+          <div id="halls-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Register Examination Hall</div>
+              <form onsubmit="handleFormSubmit(event, 'halls', '/api/halls')">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Hall Name / Number <span class="req">*</span></label>
+                    <input type="text" name="hall_name" class="form-input" placeholder="e.g. Aryabhatta Hall 101" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Building / Block <span class="req">*</span></label>
+                    <input type="text" name="building" class="form-input" placeholder="e.g. Academic Block A" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Seating Capacity (CHECK > 0) <span class="req">*</span></label>
+                    <input type="number" name="capacity" min="1" value="60" class="form-input" required>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Hall to MySQL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search halls..." oninput="handleTableSearch('halls', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('halls', 'hall_id')">ID ↕</th>
+                      <th onclick="handleTableSort('halls', 'hall_name')">Hall Name ↕</th>
+                      <th onclick="handleTableSort('halls', 'building')">Building ↕</th>
+                      <th onclick="handleTableSort('halls', 'capacity')">Seating Capacity ↕</th>
+                      <th>Booked Slots</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="halls-tbody"></tbody>
+                </table>
+              </div>
+              <div id="halls-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. EXAM SCHEDULE VIEW -->
+        <section id="view-schedules" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Examination Scheduling</h2>
+              <p>Timetable allocation enforcing room clash prevention: UNIQUE(hall_id, exam_date, start_time)</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('schedules', 'view')">📋 View Schedule</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('schedules', 'add')">➕ Schedule Exam</button>
+          </div>
+
+          <div id="schedules-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Book Examination Time Slot & Hall</div>
+              <form onsubmit="handleFormSubmit(event, 'schedules', '/api/schedules')">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Course (FK) <span class="req">*</span></label>
+                    <select name="course_id" id="schedule-course-select" class="form-select" required>
+                      <option value="">Loading courses...</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Exam Hall (FK) <span class="req">*</span></label>
+                    <select name="hall_id" id="schedule-hall-select" class="form-select" required>
+                      <option value="">Loading exam halls...</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Invigilator Faculty (FK) <span class="req">*</span></label>
+                    <select name="invigilator_id" id="schedule-faculty-select" class="form-select" required>
+                      <option value="">Loading faculty members...</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Examination Type <span class="req">*</span></label>
+                    <select name="exam_type" class="form-select" required>
+                      <option value="End-Term">End-Term</option>
+                      <option value="Mid-Term">Mid-Term</option>
+                      <option value="Supplementary">Supplementary</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Examination Date <span class="req">*</span></label>
+                    <input type="date" name="exam_date" value="2026-11-15" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Start Time <span class="req">*</span></label>
+                    <input type="time" name="start_time" value="09:30" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>End Time (CHECK > start_time) <span class="req">*</span></label>
+                    <input type="time" name="end_time" value="12:30" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Academic Year</label>
+                    <input type="text" name="academic_year" value="2026-2027" class="form-input">
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Exam Schedule to MySQL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search schedules..." oninput="handleTableSearch('schedules', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('schedules', 'schedule_id')">ID ↕</th>
+                      <th onclick="handleTableSort('schedules', 'course_code')">Course ↕</th>
+                      <th>Exam Type</th>
+                      <th onclick="handleTableSort('schedules', 'exam_date')">Date ↕</th>
+                      <th>Time Slot</th>
+                      <th onclick="handleTableSort('schedules', 'hall_name')">Exam Hall ↕</th>
+                      <th onclick="handleTableSort('schedules', 'invigilator_name')">Invigilator ↕</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="schedules-tbody"></tbody>
+                </table>
+              </div>
+              <div id="schedules-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. RESULTS VIEW -->
+        <section id="view-results" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Result Processing & Grading Engine</h2>
+              <p>M:N junction between student and schedule with automatic server-side grade calculation</p>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="view" onclick="switchTab('results', 'view')">📋 View Results</button>
+            <button class="tab-btn" data-tab="add" onclick="switchTab('results', 'add')">➕ Enter Result</button>
+          </div>
+
+          <div id="results-view-banner"></div>
+
+          <!-- Add Panel -->
+          <div class="tab-add-panel" style="display: none;">
+            <div class="card">
+              <div class="card-title">Record Student Examination Marks</div>
+              <form onsubmit="handleFormSubmit(event, 'results', '/api/results')">
+                <div class="form-grid">
+                  <div class="form-group full-width">
+                    <label>Select Student (FK) <span class="req">*</span></label>
+                    <select name="student_id" id="result-student-select" class="form-select" required>
+                      <option value="">Loading students...</option>
+                    </select>
+                  </div>
+                  <div class="form-group full-width">
+                    <label>Select Exam Schedule (FK) <span class="req">*</span></label>
+                    <select name="schedule_id" id="result-schedule-select" class="form-select" required>
+                      <option value="">Loading exam schedules...</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Marks Obtained</label>
+                    <input type="number" step="0.5" name="marks_obtained" id="result-marks-input" class="form-input" placeholder="e.g. 88.5">
+                    <span class="form-help">Must not exceed course maximum marks.</span>
+                  </div>
+                  <div class="form-group" style="justify-content: center;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 24px;">
+                      <input type="checkbox" name="is_absent" id="result-absent-check" onchange="document.getElementById('result-marks-input').disabled = this.checked;">
+                      <strong>Candidate was Absent</strong>
+                    </label>
+                  </div>
+                  <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Process & Calculate Grade</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- View Panel -->
+          <div class="tab-view-panel">
+            <div class="card">
+              <div class="table-toolbar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="Search results by student, roll no, course..." oninput="handleTableSearch('results', this.value)">
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th onclick="handleTableSort('results', 'result_id')">ID ↕</th>
+                      <th onclick="handleTableSort('results', 'student_name')">Student ↕</th>
+                      <th onclick="handleTableSort('results', 'course_code')">Course ↕</th>
+                      <th onclick="handleTableSort('results', 'marks_obtained')">Marks ↕</th>
+                      <th>Grade (Points)</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="results-tbody"></tbody>
+                </table>
+              </div>
+              <div id="results-pagination" class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. REPORTS VIEW -->
+        <section id="view-reports" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>SQL Analytical Reports</h2>
+              <p>Execute multi-table JOINs, subqueries, SGPA formula calculations, and presentation queries</p>
+            </div>
+          </div>
+
+          <!-- Reports Sub-nav -->
+          <div class="tabs-container">
+            <button class="tab-btn report-tab-btn active" data-report="timetable" onclick="switchReportTab('timetable')">1. Master Timetable</button>
+            <button class="tab-btn report-tab-btn" data-report="student-card" onclick="switchReportTab('student-card')">2. Student Result Card & SGPA</button>
+            <button class="tab-btn report-tab-btn" data-report="pass-percentage" onclick="switchReportTab('pass-percentage')">3. Pass Percentage</button>
+            <button class="tab-btn report-tab-btn" data-report="toppers" onclick="switchReportTab('toppers')">4. Course Toppers</button>
+            <button class="tab-btn report-tab-btn" data-report="hall-utilisation" onclick="switchReportTab('hall-utilisation')">5. Hall Utilisation</button>
+            <button class="tab-btn report-tab-btn" data-report="presentation-ii" onclick="switchReportTab('presentation-ii')">⭐ Presentation-II Query</button>
+          </div>
+
+          <!-- Report Controls (Dynamic Filter) -->
+          <div class="card" id="report-filter-bar" style="margin-bottom: 16px;">
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+              <div id="filter-hall-date" style="display: flex; gap: 8px; align-items: center;">
+                <label style="font-size: 13px; font-weight: 600;">Filter by Date:</label>
+                <input type="date" id="report-hall-date" value="2026-10-12" class="form-input" style="width: auto;">
+                <button class="btn btn-secondary" onclick="loadReportTab(AppState.reportsCurrentTab)">Run Query</button>
+              </div>
+              <div id="filter-student-picker" style="display: flex; gap: 8px; align-items: center;">
+                <label style="font-size: 13px; font-weight: 600;">Select Student:</label>
+                <select id="report-student-select" class="form-select" style="width: auto;" onchange="loadReportTab('student-card')">
+                  <option value="">-- All Students (SGPA Overview) --</option>
+                  <option value="1">EX2401001 - Tanvi Reddy</option>
+                  <option value="2">EX2401002 - Priya Rao</option>
+                  <option value="7">EX2401007 - Ananya Kumar</option>
+                  <option value="16">EX2402001 - Aditya Kumar</option>
+                  <option value="23">EX2402008 - Arjun Iyer</option>
+                  <option value="31">EX2403001 - Lakshmi Gupta</option>
+                  <option value="35">EX2403005 - Karthik Sharma</option>
+                  <option value="46">EX2404001 - Meghana Mehta</option>
+                  <option value="50">EX2404005 - Sai Mehta</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Report Output Container -->
+          <div class="card" id="report-output-container">
+            <div style="text-align: center; padding: 24px; color: #64748b;">Select a report above to run live SQL.</div>
+          </div>
+        </section>
+
+        <!-- 10. DATABASE EXPLORER VIEW -->
+        <section id="view-explorer" class="view-section" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2>Live Database Explorer (Security Whitelist)</h2>
+              <p>Inspect raw MySQL tables and system views directly through prepared <code>SELECT * FROM &lt;table&gt;</code></p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px;">
+              <label style="font-size: 14px; font-weight: 600;">Select Table to Query:</label>
+              <select id="explorer-table-select" class="form-select" style="max-width: 340px;" onchange="inspectTable(this.value)">
+                <option value="">Loading tables...</option>
+              </select>
+              <button class="btn btn-primary" onclick="inspectTable(document.getElementById('explorer-table-select').value)">Execute Query</button>
+            </div>
+
+            <div id="explorer-table-output">
+              <div style="text-align: center; padding: 30px; color: #64748b;">Loading table records...</div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- LIVE DATABASE PROOF FOOTER -->
+      <footer class="live-proof-footer">
+        <div class="proof-header">
+          <div class="proof-title">
+            <span class="proof-pulse"></span>
+            <span>Live Database Proof Engine</span>
+          </div>
+          <div class="proof-meta">
+            <span>Execution Time: <strong id="proof-time">0.0 ms</strong></span>
+            <span>Rows: <strong id="proof-rows">0</strong></span>
+            <span>Host: <strong>localhost:3306</strong></span>
+            <span>DB: <strong>exam_management_db</strong></span>
+          </div>
+        </div>
+        <div class="proof-sql-box" id="proof-sql">SELECT "Database initialized successfully" AS status;</div>
+        <div class="proof-params" id="proof-params">Parameters: []</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal-dialog">
+      <div class="modal-title">Confirm Record Deletion</div>
+      <div class="modal-body" id="delete-modal-msg">Are you sure you want to delete this record?</div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="executeDelete()" style="padding: 9px 18px; font-size: 13.5px;">Delete Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
