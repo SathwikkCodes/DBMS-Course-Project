@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Examination System{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">OVERVIEW</div><h2>Dashboard</h2><p>Live summary from your MySQL database.</p></div><span class="badge">MYSQL + FLASK</span></div>
+<div class="cards"><a class="card" href="{{ url_for('students') }}"><span>Students</span><strong>{{ counts.student }}</strong><small>Manage student records →</small></a><a class="card" href="{{ url_for('courses') }}"><span>Courses</span><strong>{{ counts.course }}</strong><small>Manage courses →</small></a><a class="card" href="{{ url_for('exams') }}"><span>Exams</span><strong>{{ counts.exam }}</strong><small>Manage examinations →</small></a><a class="card" href="{{ url_for('rooms') }}"><span>Rooms</span><strong>{{ counts.room }}</strong><small>Manage rooms →</small></a><a class="card" href="{{ url_for('results') }}"><span>Results</span><strong>{{ counts.scores }}</strong><small>Process results →</small></a></div>
+<section class="panel welcome"><h3>How to use the system</h3><div class="workflow"><div><b>1. Insert</b><span>Add records using the form at the top of each page.</span></div><div><b>2. Update</b><span>Edit the visible fields directly and click the Update button.</span></div><div><b>3. Delete</b><span>Remove records using the Delete button when needed.</span></div></div></section>
+{% endblock %}

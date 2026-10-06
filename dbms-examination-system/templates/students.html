@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Students - Examination System{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">STUDENT MANAGEMENT</div><h2>Students</h2><p>Insert new students or edit existing student records.</p></div><span class="badge">CRUD</span></div>
+<section class="panel add-panel"><h3><span class="step insert">1</span> Add Student</h3>
+<form class="grid" method="post" action="{{ url_for('add_student') }}">
+<input name="first_name" placeholder="First name" required><input name="last_name" placeholder="Last name" required><input name="dob" type="date" required><input name="major" placeholder="Major" required><input name="contact" placeholder="Contact" required><button type="submit">＋ Add Student</button>
+</form></section>
+<section class="panel"><div class="section-title"><div><h3><span class="step edit">2</span> Existing Students</h3><p class="small">The fields below are directly editable. Change a value, then click Update.</p></div></div>
+<div class="record-list">
+{% for s in students %}
+<div class="record-card">
+  <form method="post" action="{{ url_for('update_student', student_id=s.Student_ID) }}">
+    <div class="record-top"><span class="id-chip">ID {{ s.Student_ID }}</span><span class="record-name">{{ s.First_Name }} {{ s.Last_Name }}</span></div>
+    <div class="field-grid five">
+      <label>First name<input name="first_name" value="{{ s.First_Name }}" required></label>
+      <label>Last name<input name="last_name" value="{{ s.Last_Name }}" required></label>
+      <label>Date of birth<input name="dob" type="date" value="{{ s.DOB }}" required></label>
+      <label>Major<input name="major" value="{{ s.Major }}" required></label>
+      <label>Contact<input name="contact" value="{{ s.Contact }}" required></label>
+    </div>
+    <div class="record-actions"><button type="submit">✓ Update Student</button></form>
+      <form method="post" action="{{ url_for('delete_student', student_id=s.Student_ID) }}" onsubmit="return confirm('Delete this student?');"><button class="danger" type="submit">Delete</button></form>
+    </div>
+</div>
+{% else %}<div class="empty">No students found.</div>{% endfor %}
+</div></section>
+{% endblock %}

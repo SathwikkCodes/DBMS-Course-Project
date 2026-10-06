@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Exam Schedule - Examination System{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+    <div>
+        <div class="eyebrow">SCHEDULING</div>
+        <h2>Exam Schedule</h2>
+        <p>Assign exams to rooms and manage timings.</p>
+    </div>
+    <span class="badge">CRUD</span>
+</div>
+
+<!-- ADD SCHEDULE -->
+<section class="panel add-panel">
+    <h3>
+        <span class="step insert">1</span>
+        Schedule an Exam
+    </h3>
+
+    <form class="grid" method="post" action="{{ url_for('add_schedule') }}">
+
+        <select name="exam_id" required>
+            <option value="">Select exam</option>
+
+            {% for e in exams %}
+            <option value="{{ e.Exam_ID }}">
+                {{ e.Exam_ID }} — {{ e.Exam_Name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <select name="room_number" required>
+            <option value="">Select room</option>
+
+            {% for r in rooms %}
+            <option value="{{ r.Room_Number }}">
+                {{ r.Room_Number }} — {{ r.Building_Name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <input
+            name="exam_date"
+            type="date"
+            required
+        >
+
+        <input
+            name="start_time"
+            type="time"
+            required
+        >
+
+        <input
+            name="end_time"
+            type="time"
+            required
+        >
+
+        <input
+            name="supervisor_id"
+            placeholder="Supervisor ID"
+            required
+        >
+
+        <button type="submit">
+            ＋ Schedule Exam
+        </button>
+
+    </form>
+</section>
+
+
+<!-- SCHEDULED EXAMS -->
+<section class="panel">
+
+    <h3>
+        <span class="step edit">2</span>
+        Scheduled Exams
+    </h3>
+
+    <p class="small">
+        Exam and room are fixed keys; date, time and supervisor can be edited.
+    </p>
+
+    <div class="record-list">
+
+        {% for s in schedules %}
+
+        <div class="record-card">
+
+            <!-- UPDATE FORM -->
+            <form
+                method="post"
+                action="{{ url_for(
+                    'update_schedule',
+                    exam_id=s.Exam_ID,
+                    room_number=s.Room_Number
+                ) }}"
+            >
+
+                <div class="record-top">
+
+                    <span class="id-chip">
+                        Exam {{ s.Exam_ID }} · Room {{ s.Room_Number }}
+                    </span>
+
+                    <span class="record-name">
+                        {{ s.Exam_Name }}
+                    </span>
+
+                    <span class="small">
+                        {{ s.Course_Name }} · {{ s.Building_Name }}
+                    </span>
+
+                </div>
+
+
+                <div class="field-grid four">
+
+                    <!-- DATE -->
+                    <label>
+                        Date
+                        <input
+                            name="exam_date"
+                            type="date"
+                            value="{{ s.Exam_Date }}"
+                            required
+                        >
+                    </label>
+
+
+                    <!-- START TIME -->
+                    <label>
+                        Start time
+                        <input
+                            name="start_time"
+                            type="time"
+                            value="{{
+                                '%02d:%02d'|format(
+                                    s.Start_Time.seconds // 3600,
+                                    (s.Start_Time.seconds % 3600) // 60
+                                )
+                                if s.Start_Time else ''
+                            }}"
+                            required
+                        >
+                    </label>
+
+
+                    <!-- END TIME -->
+                    <label>
+                        End time
+                        <input
+                            name="end_time"
+                            type="time"
+                            value="{{
+                                '%02d:%02d'|format(
+                                    s.End_Time.seconds // 3600,
+                                    (s.End_Time.seconds % 3600) // 60
+                                )
+                                if s.End_Time else ''
+                            }}"
+                            required
+                        >
+                    </label>
+
+
+                    <!-- SUPERVISOR -->
+                    <label>
+                        Supervisor ID
+                        <input
+                            name="supervisor_id"
+                            value="{{ s.Supervisor_ID }}"
+                            required
+                        >
+                    </label>
+
+                </div>
+
+
+                <div class="record-actions">
+
+                    <button type="submit">
+                        ✓ Update Schedule
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- DELETE FORM -->
+            <form
+                method="post"
+                action="{{ url_for(
+                    'delete_schedule',
+                    exam_id=s.Exam_ID,
+                    room_number=s.Room_Number
+                ) }}"
+                onsubmit="return confirm('Delete this schedule entry?');"
+            >
+
+                <div class="record-actions">
+
+                    <button
+                        class="danger"
+                        type="submit"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+            No scheduled exams found.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}
